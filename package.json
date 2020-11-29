@@ -11,6 +11,7 @@
   "author": "an-kit",
   "license": "ISC",
   "dependencies": {
+    "abort-controller": "^3.0.0",
     "isomorphic-unfetch": "^3.1.0"
   }
 }
