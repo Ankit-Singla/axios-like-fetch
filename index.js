@@ -7,8 +7,16 @@ const transformResponse = (res) => {
         return blob;
     });
 };
-let cancel;
-axiosLikeFetch({ url, cancelToken: new CancelToken((param) => {cancel = param}) })
-.then(data => console.log(data));
+// let cancel;
+// axiosLikeFetch({ url, cancelToken: new CancelToken((param) => {cancel = param}) })
+// .then(data => console.log(data));
+// // cancel();
 
-// cancel();
+const controller = new axiosLikeFetch.AbortController();
+const signal = controller.signal;
+signal.addEventListener('abort', () => {
+    console.log('Request Aborted');
+});
+axiosLikeFetch({ url, cancelToken: controller })
+.then(data => console.log(data));
+// controller.abort();

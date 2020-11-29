@@ -5,6 +5,7 @@ const axiosLikeFetch = (config) => {
     return captainFetch(config)
         .then(data => ({...data, config}));
 };
+axiosLikeFetch.AbortController = AbortController;
 
 export class CancelToken {
     constructor(executor) {
