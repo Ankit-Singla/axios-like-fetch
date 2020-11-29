@@ -12,8 +12,15 @@ const captainFetch = (config) => {
     delete config.url;
 
     return fetch(url, config)
-        .then(res =>  res.json()
-        .then(data => ({status: res.status, statusText: res.statusText, headers: res.headers, body: data})));
+        .then(res =>  res.text()
+        .then(text => ({status: res.status, statusText: res.statusText, headers: res.headers, body: transformResponse(text)})));
+};
+
+const transformResponse = (text) => {
+    try{
+        text = JSON.parse(text || {});
+    } catch(e) {}
+    return text;
 };
 
 export default axiosLikeFetch;
