@@ -5,22 +5,27 @@ const axiosLikeFetch = (config) => {
         .then(data => ({...data, config}));
 };
 
+const transformRes = (res) => {
+    return res.text().then(text => {
+        try {
+            text = JSON.parse(text || {});
+        } catch(e) {}
+        return text;
+    });
+};
+
 const captainFetch = (config) => {
     const {
         url,
+        transformResponse=transformRes,
     } = config;
     delete config.url;
 
     return fetch(url, config)
-        .then(res =>  res.text()
-        .then(text => ({status: res.status, statusText: res.statusText, headers: res.headers, body: transformResponse(text)})));
+        .then(res =>  transformResponse(res)
+        .then(body => ({status: res.status, statusText: res.statusText, headers: res.headers, body})));
 };
 
-const transformResponse = (text) => {
-    try{
-        text = JSON.parse(text || {});
-    } catch(e) {}
-    return text;
-};
+
 
 export default axiosLikeFetch;
