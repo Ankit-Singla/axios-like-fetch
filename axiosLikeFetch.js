@@ -1,11 +1,25 @@
 import 'isomorphic-unfetch';
 import AbortController from 'abort-controller';
 
+// default implementations for interceptors
+let requestIntercept = (config) => { return config };
+let responseIntercept = (res) => { return res };
+
 const axiosLikeFetch = (config) => {
     return captainFetch(config)
         .then(data => ({...data, config}));
 };
 axiosLikeFetch.AbortController = AbortController;
+axiosLikeFetch.request = {
+    interceptors: {
+        use: (ic) => {requestIntercept = ic}
+    },
+};
+axiosLikeFetch.response = {
+    interceptors: {
+        use: (ic) => {responseIntercept = ic}
+    },
+};
 
 export class CancelToken {
     constructor(executor) {
@@ -25,6 +39,7 @@ const transformRes = (res) => {
 };
 
 const captainFetch = (config) => {
+    config = requestIntercept(config);
     const {
         url,
         transformResponse=transformRes,
@@ -40,7 +55,7 @@ const captainFetch = (config) => {
     }
     return fetch(url, {...config, signal: cancelToken.signal})
         .then(res =>  transformResponse(res)
-        .then(body => ({status: res.status, statusText: res.statusText, headers: res.headers, body})));
+        .then(body => (responseIntercept({status: res.status, statusText: res.statusText, headers: res.headers, body}))));
 };
 
 export default axiosLikeFetch;
