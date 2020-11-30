@@ -42,20 +42,30 @@ const captainFetch = (config) => {
     config = requestIntercept(config);
     const {
         url,
+        baseURL='',
         transformResponse=transformRes,
         timeout=0,
         cancelToken=new AbortController(),
+        withCredentials=false,
     } = config;
+    const credentials = withCredentials ? 'include' : 'same-origin';
     delete config.url;
+    delete config.baseURL;
+    delete config.withCredentials;
 
     if(timeout) {
         setTimeout(() => {
             controller.abort();
         }, timeout);
     }
-    return fetch(url, {...config, signal: cancelToken.signal})
+    return fetch(baseURL+url, {...config, signal: cancelToken.signal, credentials})
         .then(res =>  transformResponse(res)
-        .then(body => (responseIntercept({status: res.status, statusText: res.statusText, headers: res.headers, body}))));
+        .then(data => (responseIntercept({
+            status: res.status,
+            statusText: res.statusText,
+            headers: res.headers,
+            data
+        }))));
 };
 
 export default axiosLikeFetch;
