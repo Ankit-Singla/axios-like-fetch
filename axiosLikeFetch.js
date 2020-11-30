@@ -38,6 +38,22 @@ const transformRes = (res) => {
     });
 };
 
+const checkStatus = (res) => {
+    if (res.status >= 200 && res.status < 300) {
+      return res;
+    } else {
+      var error = new Error(response.statusText);
+      error.response = res;
+      throw error;
+    }
+};
+
+const trimConfig = (config) => {
+    delete config.url;
+    delete config.baseURL;
+    delete config.withCredentials;
+};
+
 const captainFetch = (config) => {
     config = requestIntercept(config);
     const {
@@ -49,9 +65,7 @@ const captainFetch = (config) => {
         withCredentials=false,
     } = config;
     const credentials = withCredentials ? 'include' : 'same-origin';
-    delete config.url;
-    delete config.baseURL;
-    delete config.withCredentials;
+    trimConfig(config);
 
     if(timeout) {
         setTimeout(() => {
@@ -59,6 +73,7 @@ const captainFetch = (config) => {
         }, timeout);
     }
     return fetch(baseURL+url, {...config, signal: cancelToken.signal, credentials})
+        .then(checkStatus)
         .then(res =>  transformResponse(res)
         .then(data => (responseIntercept({
             status: res.status,
