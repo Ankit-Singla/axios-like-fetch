@@ -29,6 +29,6 @@ const signal = controller.signal;
 signal.addEventListener('abort', () => {
     console.log('Request Aborted');
 });
-axiosLikeFetch({ url, cancelToken: controller })
+axiosLikeFetch({ url, cancelToken: controller, params: {name: "ankit", surname: "singla"} })
 .then(data => console.log(data));
 // controller.abort();

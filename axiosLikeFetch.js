@@ -52,6 +52,15 @@ const trimConfig = (config) => {
     delete config.url;
     delete config.baseURL;
     delete config.withCredentials;
+    delete config.params;
+};
+
+const getQueryString = (params) => {
+    let queryParams = [];
+    Object.keys(params).forEach(key => {
+        queryParams.push(`${key}=${params[key]}`);
+    });
+    return queryParams.join('&');
 };
 
 const captainFetch = (config) => {
@@ -59,12 +68,14 @@ const captainFetch = (config) => {
     const {
         url,
         baseURL='',
+        params = {},
         transformResponse=transformRes,
         timeout=0,
         cancelToken=new AbortController(),
         withCredentials=false,
     } = config;
     const credentials = withCredentials ? 'include' : 'same-origin';
+    const queryString = getQueryString(params || {});
     trimConfig(config);
 
     if(timeout) {
@@ -72,7 +83,7 @@ const captainFetch = (config) => {
             controller.abort();
         }, timeout);
     }
-    return fetch(baseURL+url, {...config, signal: cancelToken.signal, credentials})
+    return fetch(baseURL+url+`?${queryString}`, {...config, signal: cancelToken && cancelToken.signal, credentials})
         .then(checkStatus)
         .then(res =>  transformResponse(res)
         .then(data => (responseIntercept({
