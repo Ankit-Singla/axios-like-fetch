@@ -209,7 +209,4 @@ axiosLikeFetch({
 });
 controller.abort();
 ```
-
-```
-Note: you can cancel several requests with the same cancel token.
-```
+> **Note:** you can cancel several requests with the same cancel token.
