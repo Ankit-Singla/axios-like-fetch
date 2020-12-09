@@ -23,7 +23,7 @@ axiosLikeFetch({ url: '/foo' })
 **axiosLikeFetch(config)**
 ```
 // Send a POST request
-axios({
+axiosLikeFetch({
   method: 'post',
   url: '/fooBar',
   data: {
@@ -40,7 +40,7 @@ axios({
 ```
 ```
 // Make a GET request
-axios({
+axiosLikeFetch({
   method: 'get',
   url: '/foo',
 })
@@ -133,4 +133,83 @@ The response for a request contains the following information.
   config: {}
 }
 ```
+When using then, you will receive the response as follows:
+```
+axiosLikeFetch({ url: '/foo/bar' })
+  .then(function (res) {
+    console.log(res.data);
+    console.log(res.status);
+    console.log(res.statusText);
+    console.log(res.headers);
+    console.log(res.config);
+  });
+```
+When using catch, or passing a rejection callback as second parameter of then, the response will be available through the error object as explained in the Handling Errors section.
 
+## Interceptors
+You can intercept requests or responses before they are handled by then or catch.
+```
+// Add a request interceptor
+axiosLikeFetch.interceptors.request.use(function (config) {
+    // Do something before request is sent
+    return config;
+  }, function (err) {
+    // Do something with request error
+    return Promise.reject(err);
+  });
+ 
+// Add a response interceptor
+axiosLikeFetch.interceptors.response.use(function (response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    // Do something with response data
+    return response;
+  }, function (err) {
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    // Do something with response error
+    return Promise.reject(err);
+  });
+```
+If you need to remove an interceptor later you can.
+```
+const myInterceptor = axiosLikeFetch.interceptors.request.use(function () {/*...*/});
+axiosLikeFetch.interceptors.request.eject(myInterceptor);
+```
+
+## Handling Errors
+
+
+## Cancellation
+You can create a cancel token by passing an executor function to the CancelToken constructor:
+```
+const CancelToken = axios.CancelToken;
+let cancel;
+ 
+axiosLikeFetch.get({
+  url: '/foo/bar',
+  cancelToken: new CancelToken(function executor(c) {
+    // An executor function receives a cancel function as a parameter
+    cancel = c;
+  })
+});
+ 
+// cancel the request
+cancel();
+```
+
+You can also use an alternate syntax for cancelling requests. This lets you add an event listener to when the request is cancelled.
+```
+const controller = new axiosLikeFetch.AbortController();
+const signal = controller.signal;
+signal.addEventListener('abort', () => {
+    console.log('Request Aborted');
+});
+axiosLikeFetch({
+  url: '/foo/bar',
+  cancelToken: controller
+});
+controller.abort();
+```
+
+```
+Note: you can cancel several requests with the same cancel token.
+```
