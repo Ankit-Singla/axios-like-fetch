@@ -1,6 +1,8 @@
 import 'isomorphic-unfetch';
 import AbortController from 'abort-controller';
 
+const REQUEST_FAILED_ERROR_MSG = 'Request failed with status code ';
+
 // default implementations for interceptors
 let requestIntercept = (config) => { return config };
 let responseIntercept = (res) => { return res };
@@ -42,8 +44,7 @@ const checkStatus = (res) => {
     if (res.status >= 200 && res.status < 300) {
       return res;
     } else {
-      var error = new Error(response.statusText);
-      error.response = res;
+      var error = new Error(REQUEST_FAILED_ERROR_MSG + res.status);
       throw error;
     }
 };
