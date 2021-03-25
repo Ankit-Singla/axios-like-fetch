@@ -1,11 +1,25 @@
 import 'isomorphic-unfetch';
 import AbortController from 'abort-controller';
+import { checkStatus, getQueryString, recursiveApply, trimConfig } from './utils.js';
 
-const REQUEST_FAILED_ERROR_MSG = 'Request failed with status code ';
+export class CancelToken {
+    constructor(executor) {
+        const controller = new AbortController();
+        executor(() => controller.abort());
+        return controller;
+    }
+}
 
-// default implementations for interceptors
+// default implementations for interceptors and transformations
 let requestIntercept = (config) => { return config };
 let responseIntercept = (res) => { return res };
+
+const transformRes = [(data) => {
+    try {
+        data = JSON.parse(data || {});
+    } catch(e) {}
+    return data;
+}];
 
 const axiosLikeFetch = (config) => {
     return captainFetch(config)
@@ -21,47 +35,6 @@ axiosLikeFetch.response = {
     interceptors: {
         use: (ic) => {responseIntercept = ic}
     },
-};
-
-export class CancelToken {
-    constructor(executor) {
-        const controller = new AbortController();
-        executor(() => controller.abort());
-        return controller;
-    }
-}
-
-const transformRes = (res) => {
-    return res.text().then(text => {
-        try {
-            text = JSON.parse(text || {});
-        } catch(e) {}
-        return text;
-    });
-};
-
-const checkStatus = (res) => {
-    if (res.status >= 200 && res.status < 300) {
-      return res;
-    } else {
-      var error = new Error(REQUEST_FAILED_ERROR_MSG + res.status);
-      throw error;
-    }
-};
-
-const trimConfig = (config) => {
-    delete config.url;
-    delete config.baseURL;
-    delete config.withCredentials;
-    delete config.params;
-};
-
-const getQueryString = (params) => {
-    let queryParams = [];
-    Object.keys(params).forEach(key => {
-        queryParams.push(`${key}=${params[key]}`);
-    });
-    return queryParams.join('&');
 };
 
 const captainFetch = (config) => {
@@ -86,7 +59,7 @@ const captainFetch = (config) => {
     }
     return fetch(baseURL+url+`?${queryString}`, {...config, signal: cancelToken && cancelToken.signal, credentials})
         .then(checkStatus)
-        .then(res =>  transformResponse(res)
+        .then(res => res.text().then(recursiveApply(res.data, 0, transformResponse))
         .then(data => (responseIntercept({
             status: res.status,
             statusText: res.statusText,
