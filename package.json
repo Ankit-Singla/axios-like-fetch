@@ -4,7 +4,7 @@
   "description": "Use fetch as if it was a cheaper axios.",
   "main": "axiosLikeFetch.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "development": "node index.js"
   },
   "type": "module",
@@ -12,6 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "abort-controller": "^3.0.0",
-    "isomorphic-unfetch": "^3.1.0"
+    "expect.js": "^0.3.1",
+    "isomorphic-unfetch": "^3.1.0",
+    "mocha": "^8.3.2"
   }
 }
