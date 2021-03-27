@@ -56,12 +56,20 @@ const captainFetch = (config) => {
     const queryString = getQueryString(params || {});
     trimConfig(config);
 
+    let timeoutEvent;
+    const removeTimeout = (res) => {
+        clearTimeout(timeoutEvent);
+        return res;
+    };
     if(timeout) {
-        setTimeout(() => {
-            controller.abort();
+        timeoutEvent = setTimeout(() => {
+            cancelToken.abort();
+            clearTimeout(timeoutEvent);
         }, timeout);
     }
+
     return fetch(baseURL+url+`?${queryString}`, {...config, signal: cancelToken && cancelToken.signal, credentials})
+        .then(removeTimeout)
         .then(checkStatus)
         .then(res => res.text().then(text => recursiveApply(text, 0, transformResponse))
         .then(data => (axiosLikeFetch.responseIntercept({
