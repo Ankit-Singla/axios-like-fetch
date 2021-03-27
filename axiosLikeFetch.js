@@ -11,8 +11,8 @@ export class CancelToken {
 }
 
 // default implementations for interceptors and transformations
-let requestIntercept = (config) => { return config };
-let responseIntercept = (res) => { return res };
+let defaultRequestIntercept = (config) => { return config };
+let defaultResponseIntercept = (res) => { return res };
 
 const transformRes = [(data) => {
     try {
@@ -26,19 +26,23 @@ const axiosLikeFetch = (config) => {
         .then(data => ({...data, config}));
 };
 axiosLikeFetch.AbortController = AbortController;
+axiosLikeFetch.requestIntercept = defaultRequestIntercept;
 axiosLikeFetch.request = {
     interceptors: {
-        use: (ic) => {requestIntercept = ic}
+        use: (ic) => {axiosLikeFetch.requestIntercept = ic},
+        eject: () => {axiosLikeFetch.requestIntercept = defaultRequestIntercept},
     },
 };
+axiosLikeFetch.responseIntercept = defaultResponseIntercept;
 axiosLikeFetch.response = {
     interceptors: {
-        use: (ic) => {responseIntercept = ic}
+        use: (ic) => {axiosLikeFetch.responseIntercept = ic},
+        eject: () => {axiosLikeFetch.responseIntercept = defaultResponseIntercept},
     },
 };
 
 const captainFetch = (config) => {
-    config = requestIntercept(config);
+    config = axiosLikeFetch.requestIntercept(config);
     const {
         url,
         baseURL='',
@@ -60,7 +64,7 @@ const captainFetch = (config) => {
     return fetch(baseURL+url+`?${queryString}`, {...config, signal: cancelToken && cancelToken.signal, credentials})
         .then(checkStatus)
         .then(res => res.text().then(recursiveApply(res.data, 0, transformResponse))
-        .then(data => (responseIntercept({
+        .then(data => (axiosLikeFetch.responseIntercept({
             status: res.status,
             statusText: res.statusText,
             headers: res.headers,
