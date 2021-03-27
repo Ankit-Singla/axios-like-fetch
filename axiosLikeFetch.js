@@ -63,7 +63,7 @@ const captainFetch = (config) => {
     }
     return fetch(baseURL+url+`?${queryString}`, {...config, signal: cancelToken && cancelToken.signal, credentials})
         .then(checkStatus)
-        .then(res => res.text().then(recursiveApply(res.data, 0, transformResponse))
+        .then(res => res.text().then(text => recursiveApply(text, 0, transformResponse))
         .then(data => (axiosLikeFetch.responseIntercept({
             status: res.status,
             statusText: res.statusText,

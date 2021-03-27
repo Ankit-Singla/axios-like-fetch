@@ -7,20 +7,26 @@ describe('axiosLikeFetch', () => {
     });
 
     it('should return a response object with status, statusText, data, headers, config properties', function() {
-        axiosLikeFetch({ url: 'https://cat-fact.herokuapp.com/facts/random' }).then(res => {
+        return axiosLikeFetch({ url: 'https://cat-fact.herokuapp.com/facts/random' }).then(res => {
             expect(res).to.be.an('object');
             expect(res).to.have.keys(['status', 'statusText', 'data', 'headers', 'config']);
-            expect(res.status).to.be.a('string');
+            expect(res.status).to.be.a('number');
             expect(res.statusText).to.be.a('string');
-            expect(res.data).to.be.an('object' || 'string');
+            expect(res.data).to.be.a('object');
             expect(res.headers).to.be.an('object');
             expect(res.config).to.be.an('object');
         });
     });
 
     it('should transform response according to transformResponse input provided', function() {
-        axiosLikeFetch({ url: 'https://cat-fact.herokuapp.com/facts/random', transformResponse: (res) => { res.ok = true } }).then(res => {
-            expect(res.ok).to.be(true);
+        return axiosLikeFetch({
+            url: 'https://cat-fact.herokuapp.com/facts/random',
+            transformResponse: [
+                (data) => { data += 'axios-like-'; return data; },
+                (data) => { data += 'fetch'; return data; }
+            ]
+        }).then(res => {
+            expect(res.data).to.contain('axios-like-fetch');
         });
     });
 });
