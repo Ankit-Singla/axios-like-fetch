@@ -19,7 +19,25 @@ const transformRes = [(data) => {
         data = JSON.parse(data || {});
     } catch(e) {}
     return data;
-}];
+  },
+];
+
+const transformReq = [
+  (data, headers) => {
+    return { ...data, path: "from axiosLikeFetch, default 1st fun", headers };
+  },
+  (data, headers) => {
+    headers = {
+      ...headers,
+      checkFrom2ndTransformReqinHeaders: "true from 2nd function",
+    };
+    return { data, headers };
+  },
+];
+
+// const transformReq = (data, header) => {
+//   return { ...data, path: "from axiosLikeFetch, default 1st fun" };
+// };
 
 const axiosLikeFetch = (config) => {
     return captainFetch(config)
