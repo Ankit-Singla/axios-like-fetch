@@ -3,7 +3,6 @@ import axiosLikeFetch, { CancelToken } from "./axiosLikeFetch.js";
 
 // const url = "https://cat-fact.herokuapp.com/facts/random";
 
-// for transform Req
 const url = "https://jsonplaceholder.typicode.com/todos";
 
 const transformResponse = [
@@ -18,12 +17,8 @@ const transformResponse = [
   },
 ];
 
-// User defined transform Request
 const transformRequest = [
   (data, header) => {
-    // return res.blob().then(blob => {
-    //     return blob;
-    // });
     return { data, header };
   },
   (data, header) => {
@@ -70,6 +65,6 @@ let toDoDetails = {
 
 axiosLikeFetch({
   url,
-  method: "post",
+  method: "POST",
   data: toDoDetails,
 }).then((data) => console.log(data));

@@ -101,19 +101,6 @@ const captainFetch = (config) => {
     );
   }
 
-  const {
-    url,
-    baseURL = "",
-    params = {},
-    transformResponse = transformRes,
-    timeout = 0,
-    cancelToken = new AbortController(),
-    withCredentials = false,
-  } = config;
-  const credentials = withCredentials ? "include" : "same-origin";
-  const queryString = getQueryString(params || {});
-  trimConfig(config);
-
   let timeoutEvent;
   const removeTimeout = (res) => {
     clearTimeout(timeoutEvent);

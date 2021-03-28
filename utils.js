@@ -5,11 +5,11 @@ export const recursiveApply = (data, idx, fnList) => {
   return recursiveApply(fnList[idx](data), idx + 1, fnList);
 };
 
-export const recursiveApplyTranformReq = (data, header, idx, fnList) => {
+export const recursiveApplyTranformReq = (data, headers, idx, fnList) => {
   if (idx >= fnList.length) return data;
   return recursiveApplyTranformReq(
     fnList[idx](data),
-    fnList[idx](header),
+    fnList[idx](headers),
     idx + 1,
     fnList
   );
