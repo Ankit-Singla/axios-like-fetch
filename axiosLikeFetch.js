@@ -55,6 +55,15 @@ const captainFetch = (config) => {
     const credentials = withCredentials ? 'include' : 'same-origin';
     const queryString = getQueryString(params || {});
     trimConfig(config);
+    config = axiosLikeFetch.requestIntercept(config);
+    if (config.data) {
+        config.data = recursiveApplyTranformReq(
+            config.data,
+            config.header,
+            0,
+            transformReq
+        );
+    }
 
     let timeoutEvent;
     const removeTimeout = (res) => {
