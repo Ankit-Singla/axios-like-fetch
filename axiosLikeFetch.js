@@ -21,6 +21,11 @@ const transformRes = [(data) => {
     return data;
 }];
 
+const transformReq = [(data, headers) => {
+    data = {...data, descFromDefault: 'Use fetch as it is cheaper axios!'};
+    return data;
+}];
+
 const axiosLikeFetch = (config) => {
     return captainFetch(config)
         .then(data => ({...data, config}));
@@ -48,10 +53,16 @@ const captainFetch = (config) => {
         baseURL='',
         params = {},
         transformResponse=transformRes,
+        transformRequest=transformReq,
         timeout=0,
         cancelToken=new AbortController(),
         withCredentials=false,
     } = config;
+
+    if (config.data) {
+        config.data = recursiveApply(config.data, 0, transformRequest, config.headers);
+    }
+
     const credentials = withCredentials ? 'include' : 'same-origin';
     const queryString = getQueryString(params || {});
     trimConfig(config);
