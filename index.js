@@ -1,13 +1,24 @@
 // for testing
 import axiosLikeFetch, { CancelToken } from './axiosLikeFetch.js';
 
-const url = 'https://cat-fact.herokuapp.com/facts/random';
+// const url = 'https://cat-fact.herokuapp.com/facts/random';
+const url = "https://jsonplaceholder.typicode.com/todos";
+
 const transformResponse = [(data) => {
     // return res.blob().then(blob => {
     //     return blob;
     // });
     return data;
 }];
+
+const transformRequest = [
+    (data, headers) => {
+        // transform the data
+        data = {...data, location: 'from User defined transformReq'}
+        return data;
+    }
+];
+
 // let cancel;
 // axiosLikeFetch({ url, cancelToken: new CancelToken((param) => {cancel = param}) })
 // .then(data => console.log(data));
@@ -33,3 +44,14 @@ signal.addEventListener('abort', () => {
 axiosLikeFetch({ url, cancelToken: controller, params: {name: "ankit", surname: "singla"} })
 .then(data => console.log(data));
 // controller.abort();
+
+let dataToBeTransformed = {
+    name: 'axiosLikeFetch',
+    desc: 'Use fetch as if it was a cheper axios!'
+}
+
+axiosLikeFetch({
+    url,
+    method: 'POST',
+    data: dataToBeTransformed,
+}).then((data) => console.log(data));
