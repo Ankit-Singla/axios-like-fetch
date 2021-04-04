@@ -22,7 +22,7 @@ const transformRes = [(data) => {
 }];
 
 const transformReq = [(data, headers) => {
-    data = {...data, descFromDefault: 'Use fetch as it is cheaper axios!'};
+    
     return data;
 }];
 

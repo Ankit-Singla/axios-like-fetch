@@ -13,8 +13,7 @@ const transformResponse = [(data) => {
 
 const transformRequest = [
     (data, headers) => {
-        // transform the data
-        data = {...data, location: 'from User defined transformReq'}
+        
         return data;
     }
 ];
