@@ -22,7 +22,6 @@ const transformRes = [(data) => {
 }];
 
 const transformReq = [(data, headers) => {
-    
     return data;
 }];
 
@@ -59,10 +58,7 @@ const captainFetch = (config) => {
         withCredentials=false,
     } = config;
 
-    if (config.data) {
-        config.data = recursiveApply(config.data, 0, transformRequest, config.headers);
-    }
-
+    config.data = recursiveApply(config.data, 0, transformRequest, config.headers);
     const credentials = withCredentials ? 'include' : 'same-origin';
     const queryString = getQueryString(params || {});
     trimConfig(config);
