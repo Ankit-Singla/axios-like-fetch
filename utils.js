@@ -24,8 +24,45 @@ export const trimConfig = (config) => {
 
 export const getQueryString = (params) => {
     let queryParams = [];
-    Object.keys(params).forEach(key => {
-        queryParams.push(`${key}=${params[key]}`);
-    });
+    if(isURLSearchParams(params)) {
+        params.forEach((value, key) => {
+            queryParams.push(`${key}=${value}`);
+        });
+    } else if(isObject(params)) {
+        for(let key in params) {
+            queryParams.push(`${key}=${params[key]}`);
+        }
+    }
     return queryParams.join('&');
+};
+
+export const isObject = (data) => {
+    return data && typeof data === 'object';
+};
+export const isBlob = (data) => {
+    return toString.call(data) === '[object Blob]';
+};
+export const isFormData = (data) => {
+    return typeof FormData !== 'undefined' && data instanceof FormData;
+};
+export const isURLSearchParams = (data) => {
+    return typeof URLSearchParams !== 'undefined' && data instanceof URLSearchParams;
+};
+export const isArrayBuffer = (data) => {
+    return toString.call(data) === '[object ArrayBuffer]';
+};
+export const isArrayBufferView = (data) => {
+    var output;
+    if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
+        output = ArrayBuffer.isView(data);
+    } else {
+        output = (data) && (data.buffer) && (data.buffer instanceof ArrayBuffer);
+    }
+    return output;
+};
+
+export const setContentTypeIfUnset = (headers, value) => {
+    if (headers && !headers['Content-Type']) {
+      headers['Content-Type'] = value;
+    }
 };

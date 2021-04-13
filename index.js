@@ -1,9 +1,7 @@
 // for testing
 import axiosLikeFetch, { CancelToken } from './axiosLikeFetch.js';
 
-// const url = 'https://cat-fact.herokuapp.com/facts/random';
-const url = "https://jsonplaceholder.typicode.com/todos";
-
+const url = 'https://apimocha.com/axioslikefetch/hi';
 const transformResponse = [(data) => {
     // return res.blob().then(blob => {
     //     return blob;
@@ -13,7 +11,7 @@ const transformResponse = [(data) => {
 
 const transformRequest = [
     (data, headers) => {
-        
+
         return data;
     }
 ];
@@ -40,17 +38,21 @@ const signal = controller.signal;
 signal.addEventListener('abort', () => {
     console.log('Request Aborted');
 });
-axiosLikeFetch({ url, cancelToken: controller, params: {name: "ankit", surname: "singla"} })
-.then(data => console.log(data));
+// axiosLikeFetch({ url, cancelToken: controller, params: {name: "ankit", surname: "singla"}, timeout: 5000 })
+// .then(data => console.log(data));
 // controller.abort();
 
-let dataToBeTransformed = {
-    name: 'axiosLikeFetch',
-    desc: 'Use fetch as if it was a cheper axios!'
-}
+// let dataToBeTransformed = {
+//     name: 'axiosLikeFetch',
+//     desc: 'Use fetch as if it was a cheper axios!'
+// }
 
-axiosLikeFetch({
-    url,
-    method: 'POST',
-    data: dataToBeTransformed,
-}).then((data) => console.log(data));
+// axiosLikeFetch({
+//     url,
+//     method: 'POST',
+//     data: dataToBeTransformed,
+// }).then((data) => console.log(data));
+
+var paramsString = "name=axiosLikeFetch&topic=api";
+var searchParams = new URLSearchParams(paramsString);
+axiosLikeFetch({url, params: searchParams}).then(res => console.log(res));

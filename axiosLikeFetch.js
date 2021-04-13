@@ -1,6 +1,6 @@
 import 'isomorphic-unfetch';
 import AbortController from 'abort-controller';
-import { checkStatus, getQueryString, recursiveApply, trimConfig } from './utils.js';
+import * as utils from './utils.js';
 
 export class CancelToken {
     constructor(executor) {
@@ -22,6 +22,23 @@ const transformRes = [(data) => {
 }];
 
 const transformReq = [(data, headers) => {
+    if (utils.isFormData(data) ||
+      utils.isArrayBuffer(data) ||
+      utils.isBlob(data)
+    ) {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      utils.setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data)) {
+      utils.setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
     return data;
 }];
 
@@ -58,10 +75,10 @@ const captainFetch = (config) => {
         withCredentials=false,
     } = config;
 
-    config.data = recursiveApply(config.data, 0, transformRequest, config.headers);
+    config.data = utils.recursiveApply(config.data, 0, transformRequest, config.headers);
     const credentials = withCredentials ? 'include' : 'same-origin';
-    const queryString = getQueryString(params || {});
-    trimConfig(config);
+    const queryString = utils.getQueryString(params || {});
+    utils.trimConfig(config);
 
     let timeoutEvent;
     const removeTimeout = (res) => {
@@ -77,8 +94,8 @@ const captainFetch = (config) => {
 
     return fetch(baseURL+url+`?${queryString}`, {...config, signal: cancelToken && cancelToken.signal, credentials})
         .then(removeTimeout)
-        .then(checkStatus)
-        .then(res => res.text().then(text => recursiveApply(text, 0, transformResponse))
+        .then(utils.checkStatus)
+        .then(res => res.text().then(text => utils.recursiveApply(text, 0, transformResponse))
         .then(data => (axiosLikeFetch.responseIntercept({
             status: res.status,
             statusText: res.statusText,
