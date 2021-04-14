@@ -14,34 +14,6 @@ export class CancelToken {
 let defaultRequestIntercept = (config) => { return config };
 let defaultResponseIntercept = (res) => { return res };
 
-const transformRes = [(data) => {
-    try {
-        data = JSON.parse(data || {});
-    } catch(e) {}
-    return data;
-}];
-
-const transformReq = [(data, headers) => {
-    if (utils.isFormData(data) ||
-      utils.isArrayBuffer(data) ||
-      utils.isBlob(data)
-    ) {
-      return data;
-    }
-    if (utils.isArrayBufferView(data)) {
-      return data.buffer;
-    }
-    if (utils.isURLSearchParams(data)) {
-      utils.setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
-      return data.toString();
-    }
-    if (utils.isObject(data)) {
-      utils.setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
-      return JSON.stringify(data);
-    }
-    return data;
-}];
-
 const axiosLikeFetch = (config) => {
     return captainFetch(config)
         .then(data => ({...data, config}));
@@ -61,18 +33,55 @@ axiosLikeFetch.response = {
         eject: () => {axiosLikeFetch.responseIntercept = defaultResponseIntercept},
     },
 };
+axiosLikeFetch.defaults = {
+    transformRequest: [(data, headers) => {
+        if (utils.isArrayBuffer(data) ||
+          utils.isBlob(data)
+        ) {
+          return data;
+        }
+        if (utils.isArrayBufferView(data)) {
+          return data.buffer;
+        }
+        if(utils.isFormData(data)) {
+            utils.setContentTypeIfUnset(headers, 'form/multipart;charset=utf-8');
+        }
+        if (utils.isURLSearchParams(data)) {
+          utils.setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+          return data.toString();
+        }
+        if (utils.isObject(data)) {
+          utils.setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+          return JSON.stringify(data);
+        }
+        return data;
+    }],
+
+    transformResponse: [(data) => {
+        try {
+            data = JSON.parse(data || {});
+        } catch(e) {}
+        return data;
+    }],
+
+    timeout: 0,
+    withCredentials: false,
+    cancelToken: new AbortController(),
+    params: {},
+};
 
 const captainFetch = (config) => {
     config = axiosLikeFetch.requestIntercept(config);
+    const { params, transformRequest, transformResponse, timeout, cancelToken, withCredentials } = axiosLikeFetch.defaults;
     const {
         url,
         baseURL='',
-        params = {},
-        transformResponse=transformRes,
-        transformRequest=transformReq,
-        timeout=0,
-        cancelToken=new AbortController(),
-        withCredentials=false,
+        params=params,
+        transformResponse=transformResponse,
+        transformRequest=transformRequest,
+        timeout=timeout,
+        cancelToken=cancelToken,
+        withCredentials=withCredentials,
     } = config;
 
     config.data = utils.recursiveApply(config.data, 0, transformRequest, config.headers);
