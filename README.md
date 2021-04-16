@@ -1,4 +1,4 @@
-# axiosLikeFetch
+# axios-like-fetch
 Use fetch as if it was a cheaper axios.
 
 ## Installation
