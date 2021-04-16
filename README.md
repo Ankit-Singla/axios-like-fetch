@@ -2,14 +2,14 @@
 Use fetch as if it was a cheaper axios.
 
 ## Installation
-```npm install axiosLikeFetch```
+```npm install axios-like-fetch```
 
 ## Usage
 ```
-const axiosLikeFetch = require('axiosLikeFetch').default;
+const axiosLikeFetch = require('axios-like-fetch').default;
 
 axiosLikeFetch({ url: '/foo' })
-  .then(function(res) { 
+  .then(function(res) {
     // handle success
     console.log(res)
   })
@@ -55,13 +55,13 @@ These are the available config options for making requests. Only the url is requ
 {
   // `url` is the server URL that will be used for the request
   url: '/user',
- 
+
   // `method` is the request method to be used when making the request
   method: 'get', // default
- 
+
   // `baseURL` will be prepended to `url`.
   baseURL: 'https://some-domain.com/api/',
-  
+
   // `transformRequest` allows changes to the request data before it is sent to the server
   // This is only applicable for request methods 'PUT', 'POST', 'PATCH' and 'DELETE'
   // The last function in the array must return a string or an instance of Buffer, ArrayBuffer,
@@ -72,26 +72,26 @@ These are the available config options for making requests. Only the url is requ
 
     return data;
   }],
- 
+
   // `transformResponse` allows changes to the response data to be made before
   // it is passed to then/catch
   transformResponse: [function (res) {
     // Do whatever you want to transform the data
- 
+
     return res.blob().then(blob => {
         return blob;
     });
   }],
-  
+
   // `headers` are custom headers to be sent
   headers: {'X-Requested-With': 'XMLHttpRequest'},
- 
+
   // `params` are the URL parameters to be sent with the request
   // Must be a plain object or a URLSearchParams object
   params: {
     ID: 12345
   },
-  
+
   // `data` is the data to be sent as the request body
   // Only applicable for request methods 'PUT', 'POST', 'DELETE , and 'PATCH'
   // Must be of one of the following types:
@@ -101,20 +101,20 @@ These are the available config options for making requests. Only the url is requ
   data: {
     firstName: 'Fred'
   },
-  
+
   // syntax alternative to send data into the body
   // method post
   // only the value is sent, not the key
   data: 'Country=Brasil&City=Belo Horizonte',
- 
+
   // `timeout` specifies the number of milliseconds before the request times out.
   // If the request takes longer than `timeout`, the request will be aborted.
   timeout: 1000, // default is `0` (no timeout)
- 
+
   // `withCredentials` indicates whether or not cross-site Access-Control requests
   // should be made using credentials
   withCredentials: false, // default
-  
+
   // `cancelToken` specifies a cancel token that can be used to cancel the request
   // (see Cancellation section below for details)
   cancelToken: new CancelToken(function (cancel) {
@@ -128,13 +128,13 @@ The response for a request contains the following information.
 {
   // `data` is the response that was provided by the server
   data: {},
- 
+
   // `status` is the HTTP status code from the server response
   status: 200,
- 
+
   // `statusText` is the HTTP status message from the server response
   statusText: 'OK',
- 
+
   // `headers` the HTTP headers that the server responded with
   // All header names are lower cased and can be accessed using the bracket notation.
   // Example: `response.headers['content-type']`
@@ -162,7 +162,7 @@ axiosLikeFetch.interceptors.request.use(function (config) {
     return config;
   }
 );
- 
+
 // Add a response interceptor
 axiosLikeFetch.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
@@ -182,7 +182,7 @@ You can create a cancel token by passing an executor function to the CancelToken
 ```
 const CancelToken = axios.CancelToken;
 let cancel;
- 
+
 axiosLikeFetch.get({
   url: '/foo/bar',
   cancelToken: new CancelToken(function executor(c) {
@@ -190,7 +190,7 @@ axiosLikeFetch.get({
     cancel = c;
   })
 });
- 
+
 // cancel the request
 cancel();
 ```
@@ -209,3 +209,6 @@ axiosLikeFetch({
 controller.abort();
 ```
 > **Note:** you can cancel several requests with the same cancel token.
+
+## License
+[Link to MIT](https://github.com/Ankit-Singla/axiosLikeFetch/blob/master/LICENSE.md)

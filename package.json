@@ -1,5 +1,5 @@
 {
-  "name": "axiosLikeFetch",
+  "name": "axios-like-fetch",
   "version": "1.0.0",
   "description": "Use fetch as if it was a cheaper axios.",
   "main": "axiosLikeFetch.js",
@@ -8,7 +8,7 @@
   },
   "type": "module",
   "author": "an-kit",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "abort-controller": "^3.0.0",
     "expect.js": "^0.3.1",
