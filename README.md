@@ -1,12 +1,12 @@
-# axios-like-fetch
+# axiosLikeFetch
 Use fetch as if it was a cheaper axios.
 
 ## Installation
-```npm install axios-like-fetch```
+```npm install axiosLikeFetch```
 
 ## Usage
 ```
-const axiosLikeFetch = require('axios-like-fetch').default;
+const axiosLikeFetch = require('axiosLikeFetch').default;
 
 axiosLikeFetch({ url: '/foo' })
   .then(function(res) { 
