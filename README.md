@@ -6,7 +6,7 @@ Use fetch as if it was a cheaper axios.
 
 ## Usage
 ```
-const axiosLikeFetch = require('axios-like-fetch').default'
+const axiosLikeFetch = require('axios-like-fetch').default;
 
 axiosLikeFetch({ url: '/foo' })
   .then(function(res) { 
@@ -61,6 +61,17 @@ These are the available config options for making requests. Only the url is requ
  
   // `baseURL` will be prepended to `url`.
   baseURL: 'https://some-domain.com/api/',
+  
+  // `transformRequest` allows changes to the request data before it is sent to the server
+  // This is only applicable for request methods 'PUT', 'POST', 'PATCH' and 'DELETE'
+  // The last function in the array must return a string or an instance of Buffer, ArrayBuffer,
+  // FormData or Stream
+  // You may modify the headers object.
+  transformRequest: [function (data, headers) {
+    // Do whatever you want to transform the data
+
+    return data;
+  }],
  
   // `transformResponse` allows changes to the response data to be made before
   // it is passed to then/catch
@@ -128,9 +139,6 @@ The response for a request contains the following information.
   // All header names are lower cased and can be accessed using the bracket notation.
   // Example: `response.headers['content-type']`
   headers: {},
- 
-  // `config` is the config that was provided to `axiosLikeFetch` for the request
-  config: {}
 }
 ```
 When using then, you will receive the response as follows:
@@ -141,7 +149,6 @@ axiosLikeFetch({ url: '/foo/bar' })
     console.log(res.status);
     console.log(res.statusText);
     console.log(res.headers);
-    console.log(res.config);
   });
 ```
 When using catch, or passing a rejection callback as second parameter of then, the response will be available through the error object as explained in the Handling Errors section.
@@ -153,30 +160,22 @@ You can intercept requests or responses before they are handled by then or catch
 axiosLikeFetch.interceptors.request.use(function (config) {
     // Do something before request is sent
     return config;
-  }, function (err) {
-    // Do something with request error
-    return Promise.reject(err);
-  });
+  }
+);
  
 // Add a response interceptor
 axiosLikeFetch.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     return response;
-  }, function (err) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    return Promise.reject(err);
-  });
+  }
+);
 ```
 If you need to remove an interceptor later you can.
 ```
 const myInterceptor = axiosLikeFetch.interceptors.request.use(function () {/*...*/});
 axiosLikeFetch.interceptors.request.eject(myInterceptor);
 ```
-
-## Handling Errors
-
 
 ## Cancellation
 You can create a cancel token by passing an executor function to the CancelToken constructor:
