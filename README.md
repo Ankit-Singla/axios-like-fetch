@@ -211,4 +211,4 @@ controller.abort();
 > **Note:** you can cancel several requests with the same cancel token.
 
 ## License
-[Link to MIT](https://github.com/Ankit-Singla/axiosLikeFetch/blob/master/LICENSE.md)
+[MIT](https://github.com/Ankit-Singla/axiosLikeFetch/blob/master/LICENSE.md)
