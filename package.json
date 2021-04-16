@@ -1,11 +1,10 @@
 {
-  "name": "axios-like-fetch",
+  "name": "axiosLikeFetch",
   "version": "1.0.0",
   "description": "Use fetch as if it was a cheaper axios.",
   "main": "axiosLikeFetch.js",
   "scripts": {
-    "test": "mocha",
-    "development": "node index.js"
+    "test": "mocha"
   },
   "type": "module",
   "author": "an-kit",
