@@ -3,6 +3,12 @@ Use fetch as if it was a cheaper axios.
 
 Based on [isomorphic-unfetch](https://www.npmjs.com/package/isomorphic-unfetch), but provides [axios](https://www.npmjs.com/package/axios) like syntax for most features. Hopefully, we won't need another wrapper around fetch anymore.
 
+# Contributing
+Please feel free to open issues that you observe, or to open pull requests to:
+- fix issues
+- update documentation
+- add tests
+
 ## Installation
 ```npm install axios-like-fetch```
 
