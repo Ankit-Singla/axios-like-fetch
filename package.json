@@ -1,6 +1,6 @@
 {
   "name": "axios-like-fetch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Use fetch as if it was a cheaper axios.",
   "main": "axiosLikeFetch.js",
   "scripts": {
