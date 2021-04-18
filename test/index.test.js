@@ -1,5 +1,5 @@
-import axiosLikeFetch from '../axiosLikeFetch.js';
-import expect from 'expect.js';
+var axiosLikeFetch = require('../axiosLikeFetch.js');
+var expect = require('expect.js');
 
 describe('axiosLikeFetch', () => {
     it('should be a function', function() {

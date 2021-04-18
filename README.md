@@ -14,7 +14,11 @@ Please feel free to open issues that you observe, or to open pull requests to:
 
 ## Usage
 ```
-const axiosLikeFetch = require('axios-like-fetch').default;
+// using ES6 modules
+import axiosLikeFetch from 'axios-like-fetch';
+
+// using CommonJS modules
+const axiosLikeFetch = require('axios-like-fetch');
 
 axiosLikeFetch({ url: '/foo' })
   .then(function(res) {
@@ -188,7 +192,7 @@ axiosLikeFetch.interceptors.request.eject(myInterceptor);
 ## Cancellation
 You can create a cancel token by passing an executor function to the CancelToken constructor:
 ```
-const CancelToken = axios.CancelToken;
+const CancelToken = axiosLikeFetch.CancelToken;
 let cancel;
 
 axiosLikeFetch.get({

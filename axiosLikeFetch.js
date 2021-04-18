@@ -1,8 +1,8 @@
-import 'isomorphic-unfetch';
-import AbortController from 'abort-controller';
-import * as utils from './utils.js';
+const fetch = require('isomorphic-unfetch');
+const AbortController = require('abort-controller');
+const utils = require('./utils.js');
 
-export class CancelToken {
+class CancelToken {
     constructor(executor) {
         const controller = new AbortController();
         executor(() => controller.abort());
@@ -11,13 +11,13 @@ export class CancelToken {
 }
 
 // default implementations for interceptors and transformations
-let defaultRequestIntercept = (config) => { return config };
-let defaultResponseIntercept = (res) => { return res };
+let defaultRequestIntercept = function(config) { return config };
+let defaultResponseIntercept = function(res) { return res };
 
-const axiosLikeFetch = (config) => {
+function axiosLikeFetch(config) {
     return captainFetch(config)
         .then(data => ({...data, config}));
-};
+}
 axiosLikeFetch.AbortController = AbortController;
 axiosLikeFetch.requestIntercept = defaultRequestIntercept;
 axiosLikeFetch.request = {
@@ -70,18 +70,17 @@ axiosLikeFetch.defaults = {
     params: {},
 };
 
-const captainFetch = (config) => {
+function captainFetch(config) {
     config = axiosLikeFetch.requestIntercept(config);
-    const { params, transformRequest, transformResponse, timeout, cancelToken, withCredentials } = axiosLikeFetch.defaults;
     const {
         url,
         baseURL='',
-        params=params,
-        transformResponse=transformResponse,
-        transformRequest=transformRequest,
-        timeout=timeout,
-        cancelToken=cancelToken,
-        withCredentials=withCredentials,
+        params=axiosLikeFetch.defaults.params,
+        transformResponse=axiosLikeFetch.defaults.transformResponse,
+        transformRequest=axiosLikeFetch.defaults.transformRequest,
+        timeout=axiosLikeFetch.defaults.timeout,
+        cancelToken=axiosLikeFetch.defaults.cancelToken,
+        withCredentials=axiosLikeFetch.defaults.withCredentials,
     } = config;
 
     config.data = utils.recursiveApply(config.data, 0, transformRequest, config.headers);
@@ -111,6 +110,7 @@ const captainFetch = (config) => {
             headers: res.headers,
             data
         }))));
-};
+}
 
-export default axiosLikeFetch;
+module.exports = axiosLikeFetch;
+module.exports.CancelToken = CancelToken;

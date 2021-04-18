@@ -1,28 +1,28 @@
 const REQUEST_FAILED_ERROR_MSG = 'Request failed with status code ';
 
-export const recursiveApply = (data, idx, fnList, headers = {}) => {
+function recursiveApply(data, idx, fnList, headers = {}) {
     if(idx >= fnList.length)
         return data;
     return recursiveApply(fnList[idx](data), idx+1, fnList, headers);
-};
+}
 
-export const checkStatus = (res) => {
+function checkStatus(res) {
     if (res.status >= 200 && res.status < 300) {
       return res;
     } else {
       var error = new Error(REQUEST_FAILED_ERROR_MSG + res.status);
       throw error;
     }
-};
+}
 
-export const trimConfig = (config) => {
+function trimConfig(config) {
     delete config.url;
     delete config.baseURL;
     delete config.withCredentials;
     delete config.params;
-};
+}
 
-export const getQueryString = (params) => {
+function getQueryString(params) {
     let queryParams = [];
     if(isURLSearchParams(params)) {
         params.forEach((value, key) => {
@@ -34,24 +34,24 @@ export const getQueryString = (params) => {
         }
     }
     return queryParams.join('&');
-};
+}
 
-export const isObject = (data) => {
+function isObject(data) {
     return data && typeof data === 'object';
-};
-export const isBlob = (data) => {
+}
+function isBlob(data) {
     return toString.call(data) === '[object Blob]';
-};
-export const isFormData = (data) => {
+}
+function isFormData(data) {
     return typeof FormData !== 'undefined' && data instanceof FormData;
-};
-export const isURLSearchParams = (data) => {
+}
+function isURLSearchParams(data) {
     return typeof URLSearchParams !== 'undefined' && data instanceof URLSearchParams;
-};
-export const isArrayBuffer = (data) => {
+}
+function isArrayBuffer(data) {
     return toString.call(data) === '[object ArrayBuffer]';
-};
-export const isArrayBufferView = (data) => {
+}
+function isArrayBufferView(data) {
     var output;
     if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
         output = ArrayBuffer.isView(data);
@@ -59,10 +59,24 @@ export const isArrayBufferView = (data) => {
         output = (data) && (data.buffer) && (data.buffer instanceof ArrayBuffer);
     }
     return output;
-};
+}
 
-export const setContentTypeIfUnset = (headers, value) => {
+function setContentTypeIfUnset(headers, value) {
     if (headers && !headers['Content-Type']) {
       headers['Content-Type'] = value;
     }
+}
+
+module.exports = {
+    recursiveApply: recursiveApply,
+    checkStatus: checkStatus,
+    trimConfig: trimConfig,
+    getQueryString: getQueryString,
+    isObject: isObject,
+    isBlob: isBlob,
+    isFormData: isFormData,
+    isURLSearchParams: isURLSearchParams,
+    isArrayBuffer: isArrayBuffer,
+    isArrayBufferView: isArrayBufferView,
+    setContentTypeIfUnset: setContentTypeIfUnset,
 };
