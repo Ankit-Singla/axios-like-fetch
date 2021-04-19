@@ -12,12 +12,21 @@
     "type": "git",
     "url": "https://github.com/Ankit-Singla/axios-like-fetch.git"
   },
-  "keywords": [ "axios", "fetch", "http", "ajax", "url", "xhr" ],
+  "keywords": [
+    "axios",
+    "fetch",
+    "http",
+    "ajax",
+    "url",
+    "xhr"
+  ],
   "license": "MIT",
   "dependencies": {
     "abort-controller": "^3.0.0",
+    "isomorphic-unfetch": "^3.1.0"
+  },
+  "devDependencies": {
     "expect.js": "^0.3.1",
-    "isomorphic-unfetch": "^3.1.0",
     "mocha": "^8.3.2"
   }
 }
